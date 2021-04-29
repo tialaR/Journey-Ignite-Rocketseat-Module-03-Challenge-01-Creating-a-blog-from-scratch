@@ -1,1 +1,76 @@
-// TODO
+.container {
+    img {
+      width: 100vw;
+    }
+
+  article {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+
+    h1 {
+      margin-top: 5rem;
+      font-size: 3rem;
+      color: var(--white-700);
+      font-weight: bold;
+      line-height: 3.625rem;
+    }
+
+    .contentContainer {
+
+      .publicationInformationsContainer {
+        display: flex;
+        margin-top: 2rem;
+        font-size: 0.875rem;
+        color: var(--gray-500);
+        line-height: 1.06rem;
+
+        svg {
+          margin-right: 0.656rem;
+
+          & + span, & + time {
+            margin-right: 1.708rem;
+          }
+        }
+      }
+    }
+
+    .postContentContainer {
+      margin-top: 4.125rem;
+
+      font-weight: 400;
+      line-height: 1.575rem;
+      color: var(--gray-200);
+      text-align: justify;
+
+      section {
+        margin-top: 4rem;
+      }
+
+      p {
+        margin-top: 1.25rem;
+      }
+
+      a {
+        color: var(--pink-800);
+      }
+
+      strong {
+        font-weight: 700;
+      }
+
+      img {
+        width: 100px;
+        height: 100px;
+      }
+
+      h1, h2 {
+        font-weight: 700;
+        line-height: 1.575rem;
+        font-size: 2.25rem;
+        color: var(--white-700);
+        margin-bottom: 3rem;
+      }
+    }
+  }
+}

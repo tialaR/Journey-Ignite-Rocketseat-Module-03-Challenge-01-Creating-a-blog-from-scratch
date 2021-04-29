@@ -1,1 +1,76 @@
-// TODO
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+
+  .postList {
+    margin-top: 1rem;
+
+    a {
+      display: block;
+
+      & + a {
+        margin-top: 3.104rem;
+      }
+
+      transition: filter 0.4s;
+
+      &:hover {
+        filter: brightness(0.8);
+      }
+
+      &:hover .title {
+        color: var(--pink-800);
+      }
+
+      .title {
+        color: var(--white-700);
+        font-weight: 700;
+        font-size: 1.75rem;
+        transition: color 0.4s;
+      }
+
+      p {
+        color: var(--gray-200);
+        margin-top: 0.5rem;
+      }
+
+      .footerInformation {
+        margin-top: 1.56rem;
+        display: flex;
+        align-items: center;
+
+        font-size: 0.875rem;
+        color: var(--gray-500);
+        line-height: 1rem;
+
+        transition: filter 0.4s;
+
+        svg {
+          font-size: 0.9375rem;
+          margin-right: 0.656rem;
+        }
+
+        time {
+          margin-right: 1.708rem;
+        }
+      }
+    }
+  }
+
+  .loadMoreButton {
+    border: 0;
+    background: transparent;
+    color: var(--pink-800);
+    font-weight: 600;
+    font-size: 1.125rem;
+
+    margin-top: 4.125rem;
+
+    transition: filter 0.4s;
+
+    &:hover {
+      filter: brightness(0.8);
+    }
+  }
+}
