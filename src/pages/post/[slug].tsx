@@ -1,8 +1,10 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { FaCalendar, FaUser, FaClock } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import { RichText } from 'prismic-dom';
 
 import Prismic from '@prismicio/client';
+import { useMemo, useState } from 'react';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -31,8 +33,31 @@ interface PostProps {
   post: Post;
 }
 
+const woordsPerMinute = 250;
+
 export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
+
+  const [timeOfReedInMinutes, setTimeOfReedInMinutes] = useState(0);
+
+  // Calculo do tempo de leitura do blog
+  useMemo(() => {
+    const wordsSize = post.data.content.reduce((accumulator, currentValue) => {
+      const headingSize = currentValue.heading.split('').length;
+
+      const bodySize = currentValue.body.reduce(
+        (bodyAccumulator, currentBodyValue) => {
+          const bodyTextSize = currentBodyValue.text.split('').length;
+          return bodyAccumulator + bodyTextSize;
+        },
+        0
+      );
+
+      return headingSize + bodySize;
+    }, 0);
+
+    setTimeOfReedInMinutes(Math.ceil(wordsSize / woordsPerMinute));
+  }, [post.data.content]);
 
   if (router.isFallback) {
     return <p>Carregando...</p>;
@@ -60,7 +85,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               </div>
               <div>
                 <FaClock />
-                <time>4 min</time>
+                <time>{timeOfReedInMinutes} min</time>
               </div>
             </div>
           </div>
@@ -69,12 +94,11 @@ export default function Post({ post }: PostProps): JSX.Element {
             {post.data.content.map(item => (
               <section key={item.heading}>
                 <h2>{item.heading}</h2>
-                {item.body.map((bodyItem, index) => (
-                  <div
-                    key={String(index)}
-                    dangerouslySetInnerHTML={{ __html: bodyItem.text }}
-                  />
-                ))}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: RichText.asHtml(item.body),
+                  }}
+                />
               </section>
             ))}
           </div>
