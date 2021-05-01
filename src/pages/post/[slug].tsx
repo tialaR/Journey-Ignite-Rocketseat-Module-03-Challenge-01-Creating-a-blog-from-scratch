@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
 
 import Prismic from '@prismicio/client';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -59,6 +59,32 @@ export default function Post({ post }: PostProps): JSX.Element {
     setTimeOfReedInMinutes(Math.ceil(wordsSize / woordsPerMinute));
   }, [post.data.content]);
 
+  // Componente de comentários (Utterance)
+  const utterancesComments = useCallback(
+    () => (
+      <section
+        ref={elem => {
+          if (!elem) {
+            return;
+          }
+          const scriptElem = document.createElement('script');
+          scriptElem.src = 'https://utteranc.es/client.js';
+          scriptElem.async = true;
+          scriptElem.crossOrigin = 'anonymous';
+          scriptElem.setAttribute(
+            'repo',
+            'tialaR/Journey-Ignite-Rocketseat-Module-03-Challenge-01-Creating-a-blog-from-scratch'
+          );
+          scriptElem.setAttribute('issue-term', 'pathname');
+          scriptElem.setAttribute('label', 'blog-comment');
+          scriptElem.setAttribute('theme', 'github-dark');
+          elem.appendChild(scriptElem);
+        }}
+      />
+    ),
+    []
+  );
+
   if (router.isFallback) {
     return <p>Carregando...</p>;
   }
@@ -102,6 +128,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               </section>
             ))}
           </div>
+          {utterancesComments()}
         </article>
       </main>
     </>
