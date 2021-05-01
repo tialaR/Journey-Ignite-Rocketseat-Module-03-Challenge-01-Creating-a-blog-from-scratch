@@ -8,3 +8,11 @@ export default function formatShortDate(date: string): string {
 
   return formatedDate;
 }
+
+export function formatHour(date: string): string {
+  const formatedHour = format(new Date(date), 'HH:mm', {
+    locale: ptBR,
+  });
+
+  return formatedHour;
+}

@@ -2,18 +2,20 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { FaCalendar, FaUser, FaClock } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
+import Link from 'next/link';
 
 import Prismic from '@prismicio/client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
-import formatShortDate from '../../utils/formatDates';
+import formatShortDate, { formatHour } from '../../utils/formatDates';
 import styles from './post.module.scss';
 import Header from '../../components/Header';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -31,11 +33,17 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  previousPost: { uid: string; title: string };
+  nextPost: { uid: string; title: string };
 }
 
 const woordsPerMinute = 250;
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  previousPost,
+  nextPost,
+}: PostProps): JSX.Element {
   const router = useRouter();
 
   const [timeOfReedInMinutes, setTimeOfReedInMinutes] = useState(0);
@@ -114,6 +122,15 @@ export default function Post({ post }: PostProps): JSX.Element {
                 <time>{timeOfReedInMinutes} min</time>
               </div>
             </div>
+            {post.last_publication_date && (
+              <i className={styles.lastPublication}>
+                * editado em
+                <time style={{ textTransform: 'capitalize' }}>
+                  {` ${formatShortDate(post.last_publication_date)}`}
+                </time>
+                <time>{`, às ${formatHour(post.last_publication_date)}`}</time>
+              </i>
+            )}
           </div>
 
           <div className={styles.postContentContainer}>
@@ -128,6 +145,29 @@ export default function Post({ post }: PostProps): JSX.Element {
               </section>
             ))}
           </div>
+          <footer className={styles.footer}>
+            {previousPost.uid ? (
+              <Link href={`${previousPost.uid}`}>
+                <a>
+                  {previousPost.title}
+                  <strong>Post anterior</strong>
+                </a>
+              </Link>
+            ) : (
+              <div />
+            )}
+
+            {nextPost.uid ? (
+              <Link href={`${nextPost.uid}`}>
+                <a>
+                  {nextPost.title}
+                  <strong>Próximo post</strong>
+                </a>
+              </Link>
+            ) : (
+              <div />
+            )}
+          </footer>
           {utterancesComments()}
         </article>
       </main>
@@ -185,11 +225,46 @@ export const getStaticProps: GetStaticProps = async context => {
     },
   };
 
-  console.log(JSON.stringify(post, null, 2));
+  // recuperando post anterior
+  const responsePreviousPost = (
+    await prismic.query(
+      Prismic.Predicates.dateBefore(
+        'document.first_publication_date',
+        response.first_publication_date
+      ),
+      { orderings: '[document.first_publication_date]' }
+    )
+  ).results.pop();
+
+  // Recuperando próximo post
+  const responseNextPost = (
+    await prismic.query(
+      Prismic.Predicates.dateAfter(
+        'document.first_publication_date',
+        response.first_publication_date
+      ),
+      { orderings: '[document.first_publication_date]' }
+    )
+  ).results[0];
+
+  // Formatando posts
+  const previousPost = {
+    uid: responsePreviousPost?.uid ?? '',
+    title: responsePreviousPost?.data.title ?? '',
+  };
+
+  const nextPost = {
+    uid: responseNextPost?.uid ?? '',
+    title: responseNextPost?.data.title ?? '',
+  };
+
+  // console.log(JSON.stringify(post, null, 2));
 
   return {
     props: {
       post,
+      previousPost,
+      nextPost,
     },
     revalidate: 60 * 60 * 30, // 24 hours
   };

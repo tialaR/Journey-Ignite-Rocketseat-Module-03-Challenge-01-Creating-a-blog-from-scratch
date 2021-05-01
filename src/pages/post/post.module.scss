@@ -35,6 +35,14 @@
       }
     }
 
+    .lastPublication {
+      margin-top: 1rem;
+      display: block;
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      line-height: 1.06rem;
+    }
+
     .postContentContainer {
       margin-top: 4.125rem;
 
@@ -74,5 +82,38 @@
         margin-bottom: 3rem;
       }
     }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-top: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem 0 2rem;
+      margin-top: 3rem;
+
+       a {
+        & + a {
+          text-align: right;
+        }
+
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        color: var(--gray-500);
+
+        strong {
+          color: var(--pink-800);
+          margin-top: 0.5rem;
+        }
+
+        transition: filter 2s;
+
+        &:hover {
+          filter: brightness(0.7);
+        }
+       }
+    }
   }
+
 }

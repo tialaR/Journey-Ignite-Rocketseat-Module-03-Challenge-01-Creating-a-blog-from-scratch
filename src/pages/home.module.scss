@@ -74,3 +74,26 @@
     }
   }
 }
+
+.previewButtonContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+
+  aside {
+    a {
+      padding: 1rem 1.5rem;
+      background: var(--gray-200);
+      border-radius: 0.5rem;
+      color: var(--black-900);
+      font-weight: bold;
+      font-size: 0.9rem;
+
+      transition: filter 2s;
+
+      &:hover {
+        filter: brightness(0.7);
+      }
+    }
+  }
+}
